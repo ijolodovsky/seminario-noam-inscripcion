@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inscripción a workshops · Seminario NOAM</title>
+  <meta name="description" content="Elegí tus workshops del domingo de Seminario NOAM.">
+  <meta name="theme-color" content="#0f4a2c">
+  <link rel="icon" href="img/logo-noam.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;500;600;700;800&family=Caveat+Brush&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- hojas decorativas -->
+  <svg class="leaf leaf--tl" viewBox="0 0 100 100" aria-hidden="true"><path d="M5 95C5 40 40 5 95 5 95 60 60 95 5 95Z"/></svg>
+  <svg class="leaf leaf--tr" viewBox="0 0 100 100" aria-hidden="true"><path d="M5 95C5 40 40 5 95 5 95 60 60 95 5 95Z"/></svg>
+  <svg class="leaf leaf--br" viewBox="0 0 100 100" aria-hidden="true"><path d="M5 95C5 40 40 5 95 5 95 60 60 95 5 95Z"/></svg>
+  <div class="dots" aria-hidden="true"></div>
+
+  <header class="hero">
+    <img class="hero__logo" src="img/logo-noam.png" alt="Logo de NOAM" width="180" height="151">
+    <p class="hero__org">NOAM <b>ARGENTINA</b></p>
+    <h1 class="hero__title">
+      <span class="brush brush--light">Seminario</span>
+      <span class="brush brush--dark">NOAM</span>
+    </h1>
+    <p class="hero__pill">NITZOTZ</p>
+    <p class="hero__tag">Encuentro · Formación · Comunidad</p>
+  </header>
+
+  <main id="app" class="wrap">
+    <!-- Paso 1: DNI -->
+    <section id="paso-dni" class="card card--dni">
+      <h2 class="card__title">Inscripción a workshops</h2>
+      <p class="card__lead">Domingo de seminario. Ingresá tu DNI para elegir a qué espacios vas.</p>
+      <form id="form-dni" autocomplete="off" novalidate>
+        <label for="dni" class="label">DNI (solo números)</label>
+        <div class="dni-row">
+          <input id="dni" name="dni" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="Ej: 45123456" required>
+          <button class="btn btn--primary" type="submit">Ingresar</button>
+        </div>
+        <p id="dni-error" class="msg msg--error" role="alert" hidden></p>
+      </form>
+      <p id="demo-hint" class="hint" hidden>Modo demo: probá con 11111111 (madrij), 22222222 (Nofim) o 33333333 (coordinador/a). Escribí "admin" para ver el modo organización.</p>
+    </section>
+
+    <!-- Modo admin -->
+    <section id="admin-bar" class="card card--admin" hidden>
+      <div class="admin-head">
+        <p class="hola">Modo organización</p>
+        <button id="btn-salir-admin" class="btn btn--ghost" type="button">Salir</button>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" data-tab="vista" aria-selected="true" type="button">Vista de inscripción</button>
+        <button class="tab" role="tab" data-tab="panel" aria-selected="false" type="button">Seguimiento</button>
+      </div>
+      <div id="vista-como" class="vista-como">
+        <span class="label">Ver como:</span>
+        <div class="seg">
+          <button type="button" data-tipo="Madrij" class="is-on">Madrij</button>
+          <button type="button" data-tipo="Nofim">Nofim</button>
+          <button type="button" data-tipo="Coordinador">Coord. / Director</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="panel" hidden>
+      <div class="kpis" id="kpis"></div>
+      <div class="card">
+        <div class="card__row">
+          <h3 class="card__h3">Cupos por espacio</h3>
+          <button id="btn-refrescar" class="btn btn--ghost btn--sm" type="button">Actualizar</button>
+        </div>
+        <p class="hint" id="panel-hora"></p>
+        <div id="panel-cupos"></div>
+      </div>
+      <div class="card">
+        <h3 class="card__h3">Por comunidad</h3>
+        <div id="panel-com"></div>
+      </div>
+      <div class="card">
+        <h3 class="card__h3">Últimas inscripciones</h3>
+        <div id="panel-ultimas" class="ultimas"></div>
+      </div>
+    </section>
+
+    <!-- Paso 2: elegir -->
+    <section id="paso-elegir" hidden>
+      <p id="preview-banner" class="banner banner--warn" hidden>Vista previa: así lo ve quien se inscribe. Nada de lo que elijas acá se guarda.</p>
+      <div class="card card--hola" id="card-hola">
+        <div>
+          <p class="hola">¡Hola, <span id="nombre"></span>!</p>
+          <p class="hola__sub"><span id="comunidad"></span></p>
+        </div>
+        <button id="btn-salir" class="btn btn--ghost" type="button">No soy yo</button>
+      </div>
+
+      <p id="ya-inscripto" class="banner banner--ok" hidden>Ya tenés una inscripción guardada. Podés cambiarla mientras haya lugar.</p>
+      <p id="cerrada" class="banner banner--warn" hidden>La inscripción está cerrada. Abajo podés ver lo que elegiste.</p>
+
+      <form id="form-elegir" novalidate>
+        <div id="bloques"></div>
+        <p id="elegir-error" class="msg msg--error" role="alert" hidden></p>
+        <div class="sticky-actions">
+          <button id="btn-guardar" class="btn btn--primary btn--big" type="submit">Confirmar inscripción</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Paso 3: listo -->
+    <section id="paso-listo" class="card card--listo" hidden>
+      <div class="check" aria-hidden="true">✓</div>
+      <h2 class="card__title">¡Listo, quedó tu inscripción!</h2>
+      <ul id="resumen" class="resumen"></ul>
+      <p class="card__lead">Si necesitás cambiar algo, volvé a entrar con tu DNI.</p>
+      <button id="btn-modificar" class="btn btn--ghost" type="button">Modificar</button>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Ideas e intercambio de herramientas · Encuentro · Formación · Comunidad</p>
+  </footer>
+
+  <div id="loading" class="loading" hidden><div class="spinner"></div><p id="loading-txt">Cargando…</p></div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
