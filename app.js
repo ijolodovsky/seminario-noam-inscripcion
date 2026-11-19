@@ -69,7 +69,7 @@
   const habilitados = (tipo) => {
     const t = String(tipo || '').toLowerCase();
     const had = t === 'madrij' || t === 'nofim';
-    return { inst: t !== 'nofim', w1: had, w2: had };
+    return { inst: t !== 'nofim' && t !== 'staff', w1: had, w2: had };
   };
 
   /* ------------------------------------------------------------ */
@@ -313,7 +313,7 @@
       kp(`${d.totalInscriptos}/${d.totalParticipantes}`, `Inscriptos (${pct}%)`, true) +
       kp(d.totalParticipantes - d.totalInscriptos, 'Faltan inscribirse') +
       ['Madrij', 'Nofim', 'Coordinador', 'Director', 'Staff']
-        .filter((t) => tipos[t])
+        .filter((t) => tipos[t] && t !== 'Staff')
         .map((t) => kp(`${tipos[t].inscriptos}/${tipos[t].total}`, t === 'Madrij' ? 'Madrijim' : t === 'Coordinador' ? 'Coordinadores' : t === 'Director' ? 'Directores' : t))
         .join('');
 
