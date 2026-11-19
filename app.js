@@ -6,7 +6,10 @@
     { key: 'w1', bloque: 'HAD', hora: '12:30', cls: 'bloque__hora--b', titulo: 'Workshop 1 · Fortalecer nuestra hadrajá', sub: '¡Manos a la obra! · Elegí 1' },
     { key: 'w2', bloque: 'HAD', hora: '14:45', cls: 'bloque__hora--c', titulo: 'Workshop 2 · Fortalecer nuestra hadrajá', sub: 'Seguimos creando · Elegí 1 distinto al anterior' },
   ];
-  const DEMO = !window.API_URL;
+  const LOCAL = /^(localhost|127.0.0.1|[::1])$/.test(location.hostname) || location.protocol === 'file:';
+  // El modo demo solo existe en la compu de quien desarrolla. Publicado sin API_URL, la página muestra "abre pronto".
+  const DEMO = !window.API_URL && LOCAL;
+  const SIN_BACKEND = !window.API_URL && !LOCAL;
 
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -403,4 +406,8 @@
   }
 
   if (DEMO) $('#demo-hint').hidden = false;
+  if (SIN_BACKEND) {
+    $('#form-dni').hidden = true;
+    $('#paso-dni .card__lead').textContent = 'La inscripción a los workshops abre pronto. ¡Volvé a entrar en un rato!';
+  }
 })();
