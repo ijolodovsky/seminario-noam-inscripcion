@@ -157,8 +157,7 @@
       const opciones = state.actividades.filter((a) => a.bloque === t.bloque).map((a) => {
         const libres = a.libres[t.key];
         const checked = sel[t.key] === a.id;
-        const cupoTxt = libres === 0 ? 'Completo' : libres <= 5 ? `¡Quedan ${libres}!` : `${libres} lugares`;
-        const cupoCls = libres === 0 ? 'opcion__cupo--lleno' : libres <= 5 ? 'opcion__cupo--poco' : '';
+        // A quien se inscribe no le mostramos cuántos lugares quedan: solo si el espacio está completo.
         return `<label class="opcion" data-turno="${t.key}" data-id="${esc(a.id)}" data-libres="${libres}">
           <input type="radio" name="${t.key}" value="${esc(a.id)}" ${checked ? 'checked' : ''}>
           <span class="opcion__box">
@@ -169,7 +168,7 @@
               ${a.descripcion ? `<span class="opcion__desc">${esc(a.descripcion)}</span>` : ''}
               <span class="opcion__motivo" hidden></span>
             </span>
-            <span class="opcion__cupo ${cupoCls}">${cupoTxt}</span>
+            ${libres === 0 && !checked ? '<span class="opcion__cupo opcion__cupo--lleno">Completo</span>' : '<span></span>'}
           </span>
         </label>`;
       }).join('');
@@ -392,9 +391,9 @@
         A('INST-KKL', 'INST', '¿Cómo acercar Israel? Recursos y propuestas del KKL', 'KKL', ''),
         A('INST-SOJNUT', 'INST', 'Israel: más que un destino, una oportunidad', 'Sojnut', ''),
         A('INST-AMIA', 'INST', 'Conociendo más sobre la comunidad judía argentina: de inmigrantes judíos a madrijim', 'AMIA', ''),
-        A('INST-AHORA', 'INST', '¿Y ahora qué? Entre desafíos, preguntas y nuevas formas de hacer hadrajá', 'Joint, AMIA, KKL y Bama', 'A cargo de Melo y Juli Lekerman.'),
+        A('INST-AHORA', 'INST', '¿Y ahora qué? Entre desafíos, preguntas y nuevas formas de hacer hadrajá', 'Joint, AMIA, KKL y Bama', ''),
         A('INST-OSM', 'INST', 'Dilemas de la sociedad israelí', 'OSM', ''),
-        A('INST-NOAM', 'INST', 'Más que un movimiento: una identidad que nos une', 'Noam Olami', 'Con Shoshi.'),
+        A('INST-NOAM', 'INST', 'Más que un movimiento: una identidad que nos une', 'Noam Olami', ''),
         A('HAD-INCUBADORA', 'HAD', 'Incubadora de madrijim con impacto', 'Sol Goyhman', 'Networking, cómo crear proyectos con impacto y qué necesita un madrij para generar un cambio real en su comunidad.'),
         A('HAD-SOS', 'HAD', 'S.O.S.: ¡ya no tengo ideas para mis peulot!', 'Martín Hamui', 'Cambiemos la perspectiva: ¿cómo sumo judaísmo a mis peulot? Estrategias para conectar el judaísmo con las necesidades de mi grupo.'),
         A('HAD-SALUD', 'HAD', 'Manual de supervivencia: salud mental en majané', 'Simón Dimerman', 'Un espacio de psicología y descarga, con herramientas concretas para cuidar la salud mental en majané.'),
