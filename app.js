@@ -19,8 +19,8 @@
   const fijaDe = (tipo, turno) => FIJAS.find((f) => f.turno === turno && f.tipos.includes(String(tipo || '').toLowerCase()));
   // Momentos con puntaje 1-5. `opcional`: se puede marcar "No estuve".
   const M = (key, titulo, corto, opcional = true) => ({ key, titulo, corto, opcional });
-  const MOMENTOS_A = [M('logistica', '¿Qué te pareció la logística en general?', 'Logística', false), M('peula', '¿Qué te pareció la peulá?', 'Peulá'), M('fogon', '¿Qué te pareció el fogón?', 'Fogón'), M('pianobar', '¿Qué te pareció el piano bar?', 'Piano bar'), M('shajarit', '¿Qué te pareció shajarit?', 'Shajarit')];
-  const MOMENTOS_B = [M('deporte', '¿Qué te pareció el momento deportivo?', 'Momento deportivo'), M('cierre', '¿Qué te pareció el cierre?', 'Cierre')];
+  const MOMENTOS_A = [M('logistica', '¿Qué te pareció la logística en general?', 'Logística', false), M('peula', '¿Qué te pareció la peulá del sábado a la noche?', 'Peulá'), M('fogon', '¿Qué te pareció el fogón?', 'Fogón'), M('pianobar', '¿Qué te pareció el piano bar?', 'Piano bar'), M('shajarit', '¿Qué te pareció shajarit?', 'Shajarit')];
+  const MOMENTOS_B = [M('cierre', '¿Qué te pareció el cierre?', 'Cierre')];
   const ESCALA = ['', 'Muy malo', 'Malo', 'Regular', 'Bueno', 'Excelente'];
   const INTERACCION = ['Sí, mucho', 'Un poco', 'No'];
   const REPETIR = ['Sí', 'Tal vez', 'No'];
@@ -179,9 +179,9 @@
       ${chips('comida_especial', ['Sí', 'No'], r.comida_especial)}
       <div class="sub" data-si="comida_especial" hidden>
         <input class="texto" name="comida_cual" maxlength="200" placeholder="¿Cuál? (opcional)" value="${esc(r.comida_cual || '')}">
-        <p class="pregunta__sub">¿Qué te pareció la comida?</p>
-        ${puntaje('comida', r, false)}
-      </div>`, 'data-q="comida"'));
+      </div>
+      <p class="pregunta__sub" style="margin-top:16px">¿Qué te pareció la comida?</p>
+      ${puntaje('comida', r, false)}`, 'data-q="comida"'));
 
     MOMENTOS_A.forEach((m) => html.push(pregunta(++n, esc(m.titulo), puntaje(m.key, r, m.opcional), `data-q="${m.key}"`)));
 
@@ -273,7 +273,8 @@
 
     r.comida_especial = val('comida_especial');
     if (!r.comida_especial) faltan.push('comida');
-    if (r.comida_especial === 'Sí') { r.comida_cual = val('comida_cual'); leerPuntaje('comida'); } else { r.comida_cual = ''; r.comida_p = ''; r.comida_c = ''; }
+    r.comida_cual = r.comida_especial === 'Sí' ? val('comida_cual') : '';
+    leerPuntaje('comida');
 
     MOMENTOS_A.forEach((m) => leerPuntaje(m.key));
     const hab = habilitados(state.persona.tipo);
@@ -420,12 +421,12 @@
 
     $('#panel-hora').textContent = (state.admin.abierto ? 'Formulario abierto' : 'Formulario CERRADO') + ' · actualizado ' + new Date(d.generado).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
 
-    const comida = stats(rs, 'comida_p', (x) => x.comida_especial === 'Sí');
-    const comidaComs = rs.filter((x) => x.comida_especial === 'Sí' && (x.comida_c || x.comida_cual))
+    const conCond = (x) => x.comida_especial === 'Sí';
+    const comidaComs = (filtro) => rs.filter((x) => filtro(x) && (x.comida_c || x.comida_cual))
       .map((x) => ({ txt: [x.comida_cual && `[${x.comida_cual}]`, x.comida_c].filter(Boolean).join(' '), nota: x.comida_p, quien: quien(x) }));
-    const especiales = rs.filter((x) => x.comida_especial === 'Sí').length;
     $('#panel-momentos').innerHTML =
-      bloqueStats('Comida (condición especial)', comida, comidaComs, ` · ${especiales} con condición`) +
+      bloqueStats('Comida', stats(rs, 'comida_p'), comidaComs(() => true)) +
+      bloqueStats('Comida · con condición especial', stats(rs, 'comida_p', conCond), comidaComs(conCond)) +
       todos.map((m) => {
         const s = stats(rs, m.key + '_p');
         return bloqueStats(esc(m.corto), s, comentariosDe(s.xs, m.key + '_p', m.key + '_c'));
@@ -486,7 +487,7 @@
 
   function crearDemo() {
     const A = (id, bloque, titulo, aCargo) => ({ id, bloque, titulo, aCargo });
-    const r = (o) => Object.assign({ comida_especial: 'No', logistica_p: '4', peula_p: '5', fogon_p: '5', pianobar_p: 'no', shajarit_p: '3', deporte_p: '4', cierre_p: '5', interaccion: 'Sí, mucho', repetir: 'Sí' }, o);
+    const r = (o) => Object.assign({ comida_especial: 'No', logistica_p: '4', peula_p: '5', fogon_p: '5', pianobar_p: 'no', shajarit_p: '3', comida_p: '4', cierre_p: '5', interaccion: 'Sí, mucho', repetir: 'Sí' }, o);
     return {
       personas: {
         11111111: { nombre: 'Madrij', comunidad: 'Comunidad de prueba', rol: 'Madrij de 5to grado', tipo: 'Madrij' },
