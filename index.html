@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Inscripción a workshops · Seminario NOAM</title>
-  <meta name="description" content="Elegí tus workshops del domingo de Seminario NOAM.">
+  <title>Feedback · Seminario NOAM</title>
+  <meta name="description" content="Contanos qué te pareció Seminario NOAM.">
   <meta name="theme-color" content="#0f4a2c">
   <link rel="icon" href="img/logo-noam.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,13 +33,13 @@
   <main id="app" class="wrap">
     <!-- Paso 1: DNI -->
     <section id="paso-dni" class="card card--dni">
-      <h2 class="card__title">Inscripción a workshops</h2>
-      <p class="card__lead">Domingo de seminario. Ingresá tu DNI para elegir a qué espacios vas.</p>
+      <h2 class="card__title">¿Cómo te fue en el seminario?</h2>
+      <p class="card__lead">Queremos saber qué te pareció cada momento para que el próximo sea todavía mejor. Ingresá tu DNI y te lleva unos 5 minutos.</p>
       <form id="form-dni" autocomplete="off" novalidate>
         <label for="dni" class="label">DNI (solo números)</label>
         <div class="dni-row">
-          <input id="dni" name="dni" inputmode="numeric" pattern="[0-9]*" maxlength="10" placeholder="Ej: 45123456" required>
-          <button class="btn btn--primary" type="submit">Ingresar</button>
+          <input id="dni" name="dni" inputmode="numeric" pattern="[0-9]*" maxlength="20" placeholder="Ej: 45123456" required>
+          <button class="btn btn--primary" type="submit">Empezar</button>
         </div>
         <p id="dni-error" class="msg msg--error" role="alert" hidden></p>
       </form>
@@ -53,10 +53,10 @@
         <button id="btn-salir-admin" class="btn btn--ghost" type="button">Salir</button>
       </div>
       <div class="tabs" role="tablist">
-        <button class="tab" role="tab" data-tab="vista" aria-selected="true" type="button">Vista de inscripción</button>
-        <button class="tab" role="tab" data-tab="panel" aria-selected="false" type="button">Seguimiento</button>
+        <button class="tab" role="tab" data-tab="panel" aria-selected="true" type="button">Resultados</button>
+        <button class="tab" role="tab" data-tab="vista" aria-selected="false" type="button">Vista del formulario</button>
       </div>
-      <div id="vista-como" class="vista-como">
+      <div id="vista-como" class="vista-como" hidden>
         <span class="label">Ver como:</span>
         <div class="seg">
           <button type="button" data-tipo="Madrij" class="is-on">Madrij</button>
@@ -70,52 +70,64 @@
       <div class="kpis" id="kpis"></div>
       <div class="card">
         <div class="card__row">
-          <h3 class="card__h3">Cupos por espacio</h3>
+          <h3 class="card__h3">Puntaje por momento</h3>
           <button id="btn-refrescar" class="btn btn--ghost btn--sm" type="button">Actualizar</button>
         </div>
         <p class="hint" id="panel-hora"></p>
-        <div id="panel-cupos"></div>
+        <p class="hint">Promedio de 1 a 5. Tocá cada uno para leer los comentarios.</p>
+        <div id="panel-momentos"></div>
       </div>
       <div class="card">
-        <h3 class="card__h3">Por comunidad</h3>
+        <h3 class="card__h3">Capacitaciones</h3>
+        <div id="panel-caps"></div>
+      </div>
+      <div class="card">
+        <h3 class="card__h3">Interacción y continuidad</h3>
+        <div id="panel-opciones"></div>
+      </div>
+      <div class="card">
+        <h3 class="card__h3">Qué se llevan del seminario</h3>
+        <div id="panel-llevas" class="ultimas"></div>
+      </div>
+      <div class="card">
+        <h3 class="card__h3">Algo más para destacar</h3>
+        <div id="panel-extra" class="ultimas"></div>
+      </div>
+      <div class="card">
+        <h3 class="card__h3">Respuestas por comunidad</h3>
         <div id="panel-com"></div>
-      </div>
-      <div class="card">
-        <h3 class="card__h3">Últimas inscripciones</h3>
-        <div id="panel-ultimas" class="ultimas"></div>
       </div>
     </section>
 
-    <!-- Paso 2: elegir -->
-    <section id="paso-elegir" hidden>
-      <p id="preview-banner" class="banner banner--warn" hidden>Vista previa: así lo ve quien se inscribe. Nada de lo que elijas acá se guarda.</p>
-      <div class="card card--hola" id="card-hola">
+    <!-- Paso 2: formulario -->
+    <section id="paso-form" hidden>
+      <p id="preview-banner" class="banner banner--warn" hidden>Vista previa: así lo ve quien responde. Nada de lo que completes acá se guarda.</p>
+      <div class="card card--hola">
         <div>
           <p class="hola">¡Hola, <span id="nombre"></span>!</p>
-          <p class="hola__sub"><span id="comunidad"></span></p>
+          <p class="hola__sub"><span id="rol"></span> · <span id="comunidad"></span></p>
         </div>
         <button id="btn-salir" class="btn btn--ghost" type="button">No soy yo</button>
       </div>
 
-      <p id="ya-inscripto" class="banner banner--ok" hidden>Ya tenés una inscripción guardada. Podés cambiarla mientras haya lugar.</p>
-      <p id="cerrada" class="banner banner--warn" hidden>La inscripción está cerrada. Abajo podés ver lo que elegiste.</p>
+      <p id="ya-respondio" class="banner banner--ok" hidden>Ya mandaste tu feedback. Abajo están tus respuestas, podés cambiarlas y volver a enviar.</p>
+      <p id="cerrado" class="banner banner--warn" hidden>El formulario de feedback está cerrado. ¡Gracias por participar!</p>
 
-      <form id="form-elegir" novalidate>
-        <div id="bloques"></div>
-        <p id="elegir-error" class="msg msg--error" role="alert" hidden></p>
+      <form id="form-feedback" novalidate>
+        <div id="preguntas"></div>
+        <p id="form-error" class="msg msg--error" role="alert" hidden></p>
         <div class="sticky-actions">
-          <button id="btn-guardar" class="btn btn--primary btn--big" type="submit">Confirmar inscripción</button>
+          <button id="btn-enviar" class="btn btn--primary btn--big" type="submit">Enviar feedback</button>
         </div>
       </form>
     </section>
 
-    <!-- Paso 3: listo -->
+    <!-- Paso 3: gracias -->
     <section id="paso-listo" class="card card--listo" hidden>
       <div class="check" aria-hidden="true">✓</div>
-      <h2 class="card__title">¡Listo, quedó tu inscripción!</h2>
-      <ul id="resumen" class="resumen"></ul>
-      <p class="card__lead">Si necesitás cambiar algo, volvé a entrar con tu DNI.</p>
-      <button id="btn-modificar" class="btn btn--ghost" type="button">Modificar</button>
+      <h2 class="card__title">¡Gracias por tu feedback!</h2>
+      <p class="card__lead">Nos sirve muchísimo para armar el próximo seminario. Si te olvidaste de algo, volvé a entrar con tu DNI y editalo.</p>
+      <button id="btn-modificar" class="btn btn--ghost" type="button">Editar mis respuestas</button>
     </section>
   </main>
 
